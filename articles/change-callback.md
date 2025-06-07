@@ -44,7 +44,6 @@ private void OnArrayExampleChanged(OnChangedData onChangedData)
 
 ## For Collections
 
-
 ### NetworkLinkedList
 
 Example:
@@ -109,7 +108,6 @@ private void OnMyNetworkUnorderedListChanged(OnChangedData onChangedData)
 }
 ```
 
-
 ### NetworkQueue
 
 Example:
@@ -148,7 +146,6 @@ private void OnMyNetworkStackChanged(OnChangedData onChangedData)
 > [!WARNING]
 > Be careful when using these methods on `OnChangedData`, since they are unsafe and can cause a crash if you go outside array range or use an incorrect type.
 
-
 ## Finding Removed and Added Items to Collections
 
 Using the previous snapshot (version) of the collection, we are able to compare the current collection against the previous snapshot to find the items that were added and the items that were removed.
@@ -158,7 +155,6 @@ Using the previous snapshot (version) of the collection, we are able to compare 
 This example uses a `NetworkDictionary` but the same applies to other collections.
 
 ```cs
-
  [Networked(size: 10)]
  public NetworkDictionary<int, Vector3> NetworkDictionaryExample = new NetworkDictionary<int, Vector3>(10);
 
