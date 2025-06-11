@@ -1,4 +1,14 @@
+Sandbox.Tick: The current simulated frame number
 
+Sandbox.PredictedTick: The farthest frame predicted by the client
+
+Sandbox.AuthoritativeTick: The latest authoritative state frame received from the server
+
+Predicted Object:
+
+The object for which you are the input source (local player character)
+
+Or the object with Prediction Mode = Everyone set (such as a physics object)
 ```mermaid
 graph LR
 A[Start Tick] --> B[Rollback]
