@@ -162,12 +162,13 @@ void ServerFireProjectile(FVector Location);
 UFUNCTION(NetMulticast, Unreliable) // Multicast RPC
 void MulticastPlayImpactEffect();
 ```
-
+```markdown
 graph TB
 A[Game logic layer] -->|Call| B[High-level network API]
 B -->|Performance bottleneck| C[Bottom-level Socket channel]
 C --> D[Custom binary protocol]
-
+```
+```markdown
 graph TD
 A[Project requirements] --> B{Deep network control required?}
 B -->|Yes| C[Bottom-level + high-level hybrid architecture]
@@ -178,5 +179,5 @@ E -->|No| G[Extended Engine Network Module]
 D --> H{Rapid Prototyping?}
 H -->|Yes| I[Unity Netcode/Unreal Replication]
 H -->|No| J[Mirror/Fish-Networking]
-
+```
 Summary: In the early network workflow, they would manually write each data packet. Most game developers in China use this method and use frame synchronization. In Hight Level Network, it will automatically serialize and automatically generate some code in the IL (compilation) stage, allowing you to quickly implement multiplayer games.

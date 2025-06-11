@@ -1,9 +1,3 @@
-```mermaid
-graph TD
-A[Player character] -- InputSource --> B(full prediction)
-C[Physics props] -- Everyone --> D(partial prediction)
-E[Scene element] -- non-updated object --> F(zero-overhead synchronization)
-```
 
 ```mermaid
 graph LR
@@ -74,8 +68,8 @@ The player sees the latest screen that incorporates the correction results
 
 ```mermaid
 graph TD
-A[Player character] -- InputSource --> B(complete prediction)
-C[Physical props] -- Everyone --> D(partial prediction)
+A[Physical props] -- InputSource --> B(complete prediction)
+C[Player character] -- Everyone --> D(partial prediction)
 E[Scene element] -- Non-updated object --> F(zero-overhead synchronization)
 ```
 Object classification:

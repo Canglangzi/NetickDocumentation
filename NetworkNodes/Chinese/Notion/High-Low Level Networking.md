@@ -156,12 +156,13 @@ void ServerFireProjectile(FVector Location);
 UFUNCTION(NetMulticast, Unreliable) // 多播RPC
 void MulticastPlayImpactEffect();
 ```
-
+```markdown
 graph TB
     A[游戏逻辑层] -->|调用| B[高层网络API]
     B -->|性能瓶颈处| C[底层Socket通道]
     C --> D[自定义二进制协议]
-
+```
+```markdown
 graph TD
     A[项目需求] --> B{需要深度网络控制?}
     B -->|是| C[底层+高层混合架构]
@@ -172,5 +173,5 @@ graph TD
     D --> H{快速原型?}
     H -->|是| I[Unity Netcode/Unreal Replication]
     H -->|否| J[Mirror/Fish-Networking]
-
+```
 总结: 早期网络工作流 他们会手动写每个数据包 在中国多数游戏开发厂商都使用这种方法和使用帧同步 而在 Hight Level Network 中  他会自动序列化 自动在IL（编译）阶段生成一些代码 让你快速实现多人游戏
