@@ -1,5 +1,5 @@
 ```markdown
-```graph TD
+graph TD
 A[Network Programming Paradigm] --> B[High-Level Networking]
 A --> C[Low-Level Networking]
 B --> D[Game Engine Integration Layer]
