@@ -1,108 +1,99 @@
-
-
-```mermaid 
+```mermaid
 graph TD
-A[玩家角色] -- InputSource --> B(完整预测)
-C[物理道具] -- Everyone --> D(部分预测)
-E[场景元素] -- 非更新对象 --> F(零开销同步)
+A[Player character] -- InputSource --> B(full prediction)
+C[Physics props] -- Everyone --> D(partial prediction)
+E[Scene element] -- non-updated object --> F(zero-overhead synchronization)
 ```
-
 
 ```mermaid
 graph LR
-A[开始 Tick] --> B[回滚 Rollback]
-B --> C[重播 Resim]
-C --> D[新 Tick]
+A[Start Tick] --> B[Rollback]
+B --> C[Resim]
+C --> D[New Tick]
 ```
 
-预测流程 回滚→重模拟→新帧
+Prediction process Rollback → Resim → New frame
 
-```mermaid 
+```mermaid
 graph TB
-    A[开始Tick] --> B[回滚操作]
-    B --> C[设置Sandbox.Tick = AuthoritativeTick]
-    C --> D[所有对象回滚到服务器状态]
+A[Start Tick] --> B[Rollback operation]
+B --> C[Set Sandbox.Tick = AuthoritativeTick]
+C --> D[All objects roll back to server state]
 ```
 
+Rollback phase (Rollback)
 
-回滚阶段 (Rollback)
-
-把游戏时间倒回服务器确认的状态点
+Rewind the game time to the state point confirmed by the server
 
 `Sandbox.Tick = AuthoritativeTick`
 
-所有预测对象（你的角色）回到过去状态
+All predicted objects (your characters) return to the past state
 
-*非更新对象：直接应用服务器快照
+*Non-updated objects: directly apply server snapshots
 
-```mermaid 
+```mermaid
 graph LR
-    E[重模拟起点] --> F[循环执行 Resimulations 次]
-    F --> G[仅预测对象执行 NetworkFixedUpdate]
-    G --> H[推进 Sandbox.Tick++]
+E[Resimulation start point] --> F[Loop Resimulations times]
+F --> G[Only predicted objects execute NetworkFixedUpdate]
+G --> H[Advance Sandbox.Tick++]
+
 ```
 
 **Resim**
 
-预测对象重播历史操作
-仅针对预测对象（InputSource/Everyone模式）
+Predicted objects replay historical operations
+Only for predicted objects (InputSource/Everyone mode)
 
-从 AuthoritativeTick 到 PredictedTick 逐tick重播
+Replay from AuthoritativeTick to PredictedTick tick by tick
 
-使用真实输入数据修正历史状态
-非预测对象不参与此阶段
+Use real input data to correct historical states
+Non-predicted objects do not participate in this stage
 
-每次循环推进1个tick
+Advance 1 tick each loop
 
-- 完成后：`Sandbox.Tick = PredictedTick`
+- After completion: `Sandbox.Tick = PredictedTick`
 
-- *效果：修正预测错误，保持流畅* <=插值
-```mermaid 
+- *Effect: Correct prediction errors and keep smooth* <= interpolation
+```mermaid
 graph LR
-    I[新帧开始] --> J[所有活动对象执行 NetworkFixedUpdate]
-    J --> K[Sandbox.Tick/PredictedTick +=1]
+I[New frame starts] --> J[All active objects execute NetworkFixedUpdate]
+J --> K[Sandbox.Tick/PredictedTick +=1]
 ```
-**新 Tick**
+**New Tick**
 
-=>所有对象正常推进
-全体对象参与模拟（包括非预测对象）
+=>All objects advance normally
+All objects participate in the simulation (including non-predicted objects)
 
-基于最新输入推进游戏状态
+Advance the game state based on the latest input
 
-时间线正式进入未来帧
+The timeline officially enters the future frame
 
-基于当前 Sandbox.Tick 状态渲染画面
+Render the screen based on the current Sandbox.Tick state
 
-玩家看到融合了修正结果的最新画面
+The player sees the latest screen that incorporates the correction results
 
-
-```mermaid 
+```mermaid
 graph TD
-A[玩家角色] -- InputSource --> B(完整预测)
-C[物理道具] -- Everyone --> D(部分预测)
-E[场景元素] -- 非更新对象 --> F(零开销同步)
+A[Player character] -- InputSource --> B(complete prediction)
+C[Physical props] -- Everyone --> D(partial prediction)
+E[Scene element] -- Non-updated object --> F(zero-overhead synchronization)
 ```
-对象分级：
+Object classification:
 
-核心对象 → Everyone模式
+Core object → Everyone mode
 
-次要对象 → InputSource模式
+Secondary object → InputSource mode
 
-静态对象 → 非更新模式
+Static object → Non-updated mode
 
+Non-local objects are "semi-predicted" in `InputSource` mode, and are only slightly adjusted when the time points are aligned
 
-非本地对象在 `InputSource` 模式下是"半预测"，只在时间点对齐时微
+Object type Rollback phase Resimulation phase New frame phase
+Local input source Reset state Full replay n times Normal advancement
+Non-local input source Reset state Skip Normal progress
+Non-updated object Application server snapshot No operation No operation
 
-
-对象类型	                 回滚阶段	 重模拟阶段	新帧阶段
-本地输入源	重置状态	 完整重播n次	正常推进
-非本地输入源	重置状态	 跳过	                正常推进
-非更新对象      应用服务器快照	 无操作	                无操作
-
-
- Everyone 模式
-对象类型	                回滚阶段	重模拟阶段	新帧阶段
-所有预测对象	重置状态	完整重播n次	正常推进
-非更新对象	应用服务器快照	无操作	无操作
-
-
+Everyone mode
+Object type Rollback phase Resimulation phase New frame phase
+All prediction objects Reset state Full replay n times Normal progress
+Non-updated object Application server snapshot No operation No operatio
